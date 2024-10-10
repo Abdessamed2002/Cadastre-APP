@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    // Define the libraries you want to use
+    "lib": ["dom", "dom.iterable", "esnext"],
+    // Allow JavaScript files to be compiled
+    "allowJs": true,
+    // Skip type checking for declaration files
+    "skipLibCheck": true,
+    // Enable strict type checking options
+    "strict": true,
+    // Do not emit output files
+    "noEmit": true,
+    // Enable interoperability between CommonJS and ES Modules
+    "esModuleInterop": true,
+    // Specify module system for your project
+    "module": "esnext",
+    // Specify module resolution strategy
+    "moduleResolution": "bundler",
+    // Allow importing JSON files as modules
+    "resolveJsonModule": true,
+    // Ensure that each file is treated as a module
+    "isolatedModules": true,
+    // Preserve JSX formatting for React
+    "jsx": "preserve",
+    // Enable incremental compilation
+    "incremental": true,
+    // Use Next.js specific TypeScript plugin
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    // Define custom module paths for easier imports
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  // Include TypeScript files and Next.js types
+  "include": [
+    "next-env.d.ts", 
+    "**/*.ts", 
+    "**/*.tsx", 
+    ".next/types/**/*.ts"
+  ],
+  // Exclude the node_modules directory
+  "exclude": ["node_modules"]
+}
