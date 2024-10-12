@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from "next/navigation"; // For reading query parameters
-import Header from '../components/Header'; // Adjust this path if necessary
+import Header from '../Components/Header'; // Adjust this path if necessary
 
 const FormPage: React.FC = () => {
   const searchParams = useSearchParams();
@@ -122,17 +122,20 @@ const FormPage: React.FC = () => {
             />
           </div>
   
-          <div className="flex flex-col">
-            <label htmlFor="image" className="mb-2 font-semibold">Image (pour signaler une fraude):</label>
-            <input
-              type="file"
-              id="image"
-              name="image"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="border border-[#B2D9D0] p-3 rounded-md focus:ring-2 focus:ring-green-500"
-            />
-          </div>
+          {/* Conditionally render the image input based on the form title */}
+          {formTitle === "Signaler une fraude immobilière" && (
+            <div className="flex flex-col">
+              <label htmlFor="image" className="mb-2 font-semibold">Image (pour signaler une fraude):</label>
+              <input
+                type="file"
+                id="image"
+                name="image"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="border border-[#B2D9D0] p-3 rounded-md focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+          )}
   
           <button
             type="submit"

@@ -7,11 +7,11 @@ import { FaMapMarkerAlt, FaHome, FaExclamationTriangle, FaExclamationCircle, FaS
 const ActionButtons: React.FC = () => {
     const router = useRouter(); // Initialize the router
     const buttons = [
-        { icon: <FaMapMarkerAlt />, text: "Demander une deuxième délimitation", path: "/form" },
-        { icon: <FaHome />, text: "Demander d'enregistrer une propriété foncière non cadastrée", path: "/form" },
-        { icon: <FaExclamationTriangle />, text: "Signaler une fraude immobilière", path: "/form" },
-        { icon: <FaExclamationCircle />, text: "Déclarer un conflit", path: "/form" },
-        { icon: <FaSync />, text: "Demander la mise à jour des informations cadastrales", path: "/form" },
+        { icon: <FaMapMarkerAlt />, text: "Demander une deuxième délimitation", path: "/Form" },
+        { icon: <FaHome />, text: "Demander d'enregistrer une propriété foncière non cadastrée", path: "/Form" },
+        { icon: <FaExclamationTriangle />, text: "Signaler une fraude immobilière", path: "/Form" },
+        { icon: <FaExclamationCircle />, text: "Déclarer un conflit", path: "/Form" },
+        { icon: <FaSync />, text: "Demander la mise à jour des informations cadastrales", path: "/Form" },
     ];
 
     return (
