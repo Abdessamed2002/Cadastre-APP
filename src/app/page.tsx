@@ -1,5 +1,5 @@
-import Header from './components/Header';
-import ActionButtons from './components/ActionButtons';
+import Header from './Components/Header';
+import ActionButtons from './Components/ActionButtons';
 
 const Home: React.FC = () => {
     return (
