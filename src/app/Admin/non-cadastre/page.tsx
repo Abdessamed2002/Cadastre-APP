@@ -48,7 +48,7 @@ const NonCadastrePage: React.FC = () => {
       <h2 className="text-3xl font-bold mb-6">
         Demandes d'enregistrer une propriété foncière non cadastrée
       </h2>
-      <AdminDataTable data={nonCadastreData} />
+      <AdminDataTable data={nonCadastreData} showImage={false} />
     </>
   );
 };

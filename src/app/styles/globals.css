@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+td {
+  word-wrap: break-word; /* Pour gérer les débordements de mots */
+  overflow: hidden; /* Pour éviter le débordement */
+  height: auto; /* Permet de s'ajuster à la hauteur du contenu */
+}

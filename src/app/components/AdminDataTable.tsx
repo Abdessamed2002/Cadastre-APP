@@ -22,7 +22,10 @@ interface AdminDataTableProps {
 const TruncatedText: React.FC<{ text: string; maxLength: number }> = ({ text, maxLength }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  if (text.length <= maxLength) return <span>{text}</span>;
+  // Vérifie si le texte est trop long pour afficher le bouton
+  const shouldTruncate = text.length > maxLength && text.length > 20;
+
+  if (!shouldTruncate) return <span>{text}</span>;
 
   return (
     <span>
@@ -76,8 +79,10 @@ const AdminDataTable: React.FC<AdminDataTableProps> = ({ data, showImage = true 
               </td>
               <td className="py-3 px-4">{item.telephone}</td>
               <td className="py-3 px-4 max-w-md">
-                <TruncatedText text={item.description} maxLength={100} />
-              </td>
+  <div style={{ display: 'block', maxHeight: '6em', overflow: 'hidden' }}>
+    <TruncatedText text={item.description} maxLength={40} />
+  </div>
+</td>
               {showImage && (
                 <td className="py-3 px-4 cursor-pointer">
                   {item.image ? (

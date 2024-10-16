@@ -26,7 +26,16 @@ const DelimitationPage: React.FC = () => {
           throw new Error('Error fetching delimitation data');
         }
         const result = await response.json();
-        setData(result);
+
+        const sortedData = result.sort((a: any, b: any) => {
+          const idA = a.id ? a.id : ''; // Fallback to an empty string if id is missing
+          const idB = b.id ? b.id : ''; // Fallback to an empty string if id is missing
+          return idA.localeCompare(idB);
+        });
+        
+        console.log(result)
+        console.log(sortedData)
+        setData(sortedData);
       } catch (error: any) {
         setError(error.message);
       } finally {
@@ -43,7 +52,7 @@ const DelimitationPage: React.FC = () => {
   return (
     <>
       <h2 className="text-3xl font-bold mb-6">Demandes d'une deuxième délimitation</h2>
-      <AdminDataTable data={data} />
+      <AdminDataTable data={data} showImage={false} />
     </>
   );
 };

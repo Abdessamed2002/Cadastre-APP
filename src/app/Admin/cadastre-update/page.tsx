@@ -48,7 +48,7 @@ const CadastreUpdatePage: React.FC = () => {
       <h2 className="text-3xl font-bold mb-6">
         Demande de mise à jour des informations cadastrales
       </h2>
-      <AdminDataTable data={cadastreUpdateData} />
+      <AdminDataTable data={cadastreUpdateData} showImage={false}  />
     </>
   );
 };

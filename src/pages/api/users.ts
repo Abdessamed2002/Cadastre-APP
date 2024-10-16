@@ -16,58 +16,81 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       keepExtensions: true,
       maxFileSize: 10 * 1024 * 1024, // 10MB limit
     });
-
+  
     form.parse(req, async (err, fields, files: any) => {
       if (err) {
         console.error('Error during form parsing:', err);
         return res.status(500).json({ error: 'Erreur lors du traitement du formulaire.' });
       }
-
+  
       try {
         const client = await clientPromise;
         const db = client.db("Cadastre");
-
+  
         let imageUrl = null;
+  
+        // Vérifie si le formTitle est "fraude" avant de traiter l'image
+        if (fields.formTitle?.[0] === 'fraude') {
+          if (files?.image?.[0]?.filepath) {
+            try {
+              console.time('Cloudinary upload');
+              const result = await cloudinary.uploader.upload(files.image[0].filepath, {
+                folder: 'cadastre_app',
+                resource_type: 'auto',
+                timeout: 60000,
+              });
+              console.timeEnd('Cloudinary upload');
+              imageUrl = result.secure_url;
 
-        if (files?.image?.[0]?.filepath) {
-          try {
-            console.time('Cloudinary upload');
-            const result = await cloudinary.uploader.upload(files.image[0].filepath, {
-              folder: 'cadastre_app',
-              resource_type: 'auto',
-              timeout: 60000,
-            });
-            console.timeEnd('Cloudinary upload');
-            imageUrl = result.secure_url;
-
-            fs.unlinkSync(files.image[0].filepath);
-          } catch (uploadError) {
-            // Type narrowing for error
-            if (uploadError instanceof Error) {
-              console.error('Error uploading to Cloudinary:', uploadError.message);
-            } else {
-              console.error('Unknown error:', uploadError);
+              // Supprime le fichier temporaire local après l'upload
+              fs.unlinkSync(files.image[0].filepath);
+            } catch (uploadError) {
+              if (uploadError instanceof Error) {
+                console.error('Error uploading to Cloudinary:', uploadError.message);
+              } else {
+                console.error('Unknown error:', uploadError);
+              }
             }
+          } else {
+            console.log('No image file detected in the request');
           }
-        } else {
-          console.log('No image file detected in the request');
         }
+  
+        const formTitle = fields.formTitle?.[0] ?? 'Demander une deuxième délimitation';
+        const nom = fields.nom?.[0] ?? '';
+        const prenom = fields.prenom?.[0] ?? '';
+        const adresse = fields.adresse?.[0] ?? '';
+        const telephone = fields.telephone?.[0] ?? '';
+        const description = fields.description?.[0] ?? '';
+  
+        // Récupérer la dernière entrée pour obtenir l'id le plus élevé
+        const lastEntry = await db.collection("users")
+        .find({ formTitle: fields.formTitle?.[0] }) // Filtrer par formTitle
+        .sort({ id: -1 }) // Trier par id descendant (plus grand id en premier)
+        .limit(1)
+        .toArray();
 
+        // Initialiser l'id à 1 s'il n'y a pas d'entrées, sinon incrémenter le dernier id
+        const lastId = lastEntry.length > 0 ? Number(lastEntry[0].id) : 0;
+        const newId = lastId + 1;
+
+        // Assurer que l'id est toujours une chaîne
         const userData = {
-          formTitle: fields.formTitle?.[0] ?? 'Demander une deuxième délimitation',
-          nom: fields.nom?.[0] ?? '',
-          prenom: fields.prenom?.[0] ?? '',
-          adresse: fields.adresse?.[0] ?? '',
-          telephone: fields.telephone?.[0] ?? '',
-          description: fields.description?.[0] ?? '',
-          image: imageUrl,
+        id: newId.toString(),
+        formTitle: fields.formTitle?.[0] ?? 'Demander une deuxième délimitation',
+        nom: fields.nom?.[0] ?? '',
+        prenom: fields.prenom?.[0] ?? '',
+        adresse: fields.adresse?.[0] ?? '',
+        telephone: fields.telephone?.[0] ?? '',
+        description: fields.description?.[0] ?? '',
+        image: imageUrl,
         };
 
+        // Insertion de la nouvelle demande avec l'id unique
         await db.collection("users").insertOne(userData);
 
         res.status(200).json({ message: 'Formulaire reçu et enregistré avec succès.' });
       } catch (error) {
-        // Type narrowing for error
         if (error instanceof Error) {
           console.error('Error:', error.message);
         } else {
@@ -99,10 +122,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       // Fetch data based on formTitle
       const data = await db.collection("users")
-        .find({ formTitle })
-        .toArray();
+      .find({ formTitle })
+      .project({ _id: 0, id: 1, nom: 1, prenom: 1, adresse: 1, telephone: 1, description: 1, image: 1 }) // Include id in the projection
+      .sort({ id: 1 }) // Sort by id (ascending)
+      .toArray();
 
       res.status(200).json(data);
+
     } catch (error) {
       if (error instanceof Error) {
         console.error('Error fetching data:', error.message);

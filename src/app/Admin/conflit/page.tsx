@@ -46,7 +46,7 @@ const ConflictPage: React.FC = () => {
   return (
     <>
       <h2 className="text-3xl font-bold mb-6">Conflit Déclarers</h2>
-      <AdminDataTable data={conflictData} />
+      <AdminDataTable data={conflictData} showImage={false}  />
     </>
   );
 };
