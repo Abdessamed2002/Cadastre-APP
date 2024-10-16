@@ -8,7 +8,7 @@ const FormPage: React.FC = () => {
   const [formTitle, setFormTitle] = useState("");
 
   const [formData, setFormData] = useState({
-    formTitle: "", // On peut le stocker ici aussi
+    formTitle: "", 
     nom: "",
     prenom: "",
     adresse: "",
@@ -18,12 +18,10 @@ const FormPage: React.FC = () => {
   });
 
   useEffect(() => {
-    // Valeur par défaut si "title" n'est pas dans l'URL
     const titleFromUrl =
       searchParams?.get("title") || "Demander une deuxième délimitation";
     setFormTitle(decodeURIComponent(titleFromUrl));
 
-    // Met à jour également le formData pour inclure le formTitle
     setFormData((prevData) => ({
       ...prevData,
       formTitle: decodeURIComponent(titleFromUrl),
@@ -51,11 +49,8 @@ const FormPage: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    // Logique d'envoi du formulaire
-
-    // Simulation d'envoi au backend
     const formDataToSend = new FormData();
-    formDataToSend.append("formTitle", formData.formTitle);  // Ajoute le titre ici
+    formDataToSend.append("formTitle", formData.formTitle);
     formDataToSend.append("nom", formData.nom);
     formDataToSend.append("prenom", formData.prenom);
     formDataToSend.append("adresse", formData.adresse);
@@ -65,7 +60,6 @@ const FormPage: React.FC = () => {
       formDataToSend.append("image", formData.image);
     }
 
-    // Exemple de requête d'envoi au backend (remplace l'URL par la tienne)
     try {
       const response = await fetch("/api/users", {
         method: "POST",
@@ -73,15 +67,14 @@ const FormPage: React.FC = () => {
       });
       const result = await response.json();
 
-      // Reset the form fields after successful submission
       setFormData({
-        formTitle: "", // Reset title if needed, or keep the current one
+        formTitle: "",
         nom: "",
         prenom: "",
         adresse: "",
         telephone: "",
         description: "",
-        image: null, // Reset image field
+        image: null,
       });
       
     } catch (error) {
@@ -91,20 +84,19 @@ const FormPage: React.FC = () => {
 
   return (
     <div>
-      <Header /> {/* Inclure le composant Header */}
-      <div className="max-w-4xl mx-auto p-8">
-        <div className="flex items-center space-x-2 mb-8">
-          <h1 className="text-2xl font-bold">{formTitle}</h1>{" "}
-          {/* Titre du formulaire */}
+      <Header />
+      <div className="max-w-4xl mx-auto p-4 sm:p-8">
+        <div className="flex items-center space-x-2 mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold">{formTitle}</h1>
         </div>
 
         <form
           onSubmit={handleSubmit}
-          className="space-y-6 bg-white p-6 rounded-md shadow-md"
+          className="space-y-6 bg-white p-4 sm:p-6 rounded-md shadow-md"
         >
-          {/* Nom et Prénom sur la même ligne */}
-          <div className="flex space-x-4">
-            <div className="flex flex-col flex-1">
+          {/* Nom et Prénom sur la même ligne en grand écran, sur plusieurs lignes en mobile */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col">
               <label htmlFor="nom" className="mb-2 font-semibold">
                 Nom Propriétaire:
               </label>
@@ -115,10 +107,10 @@ const FormPage: React.FC = () => {
                 value={formData.nom}
                 onChange={handleChange}
                 required
-                className="border border-[#B2D9D0] p-3 rounded-md focus:ring-2 focus:ring-green-500"
+                className="border border-[#B2D9D0] p-2 rounded-md focus:ring-2 focus:ring-green-500"
               />
             </div>
-            <div className="flex flex-col flex-1">
+            <div className="flex flex-col">
               <label htmlFor="prenom" className="mb-2 font-semibold">
                 Prénom Propriétaire:
               </label>
@@ -129,7 +121,7 @@ const FormPage: React.FC = () => {
                 value={formData.prenom}
                 onChange={handleChange}
                 required
-                className="border border-[#B2D9D0] p-3 rounded-md focus:ring-2 focus:ring-green-500"
+                className="border border-[#B2D9D0] p-2 rounded-md focus:ring-2 focus:ring-green-500"
               />
             </div>
           </div>
@@ -145,7 +137,7 @@ const FormPage: React.FC = () => {
               value={formData.adresse}
               onChange={handleChange}
               required
-              className="border border-[#B2D9D0] p-3 rounded-md focus:ring-2 focus:ring-green-500"
+              className="border border-[#B2D9D0] p-2 rounded-md focus:ring-2 focus:ring-green-500"
             />
           </div>
 
@@ -160,8 +152,8 @@ const FormPage: React.FC = () => {
               value={formData.telephone}
               onChange={handleChange}
               required
-              pattern="[0]{1}[5-7]{1}[0-9]{8}" // Modèle pour numéros algériens (05, 06, 07)
-              className="border border-[#B2D9D0] p-3 rounded-md focus:ring-2 focus:ring-green-500"
+              pattern="[0]{1}[5-7]{1}[0-9]{8}"
+              className="border border-[#B2D9D0] p-2 rounded-md focus:ring-2 focus:ring-green-500"
             />
           </div>
 
@@ -174,11 +166,10 @@ const FormPage: React.FC = () => {
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="border border-[#B2D9D0] p-3 rounded-md focus:ring-2 focus:ring-green-500"
+              className="border border-[#B2D9D0] p-2 rounded-md focus:ring-2 focus:ring-green-500"
             />
           </div>
 
-          {/* Affichage conditionnel du champ image selon le titre du formulaire */}
           {formTitle === "Signaler une fraude immobilière" && (
             <div className="flex flex-col">
               <label htmlFor="image" className="mb-2 font-semibold">
@@ -190,14 +181,14 @@ const FormPage: React.FC = () => {
                 name="image"
                 accept="image/*"
                 onChange={handleFileChange}
-                className="border border-[#B2D9D0] p-3 rounded-md focus:ring-2 focus:ring-green-500"
+                className="border border-[#B2D9D0] p-2 rounded-md focus:ring-2 focus:ring-green-500"
               />
             </div>
           )}
 
           <button
             type="submit"
-            className="w-full bg-green-500 text-white py-3 rounded-md hover:bg-green-600 transition"
+            className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 transition"
           >
             Valider
           </button>
