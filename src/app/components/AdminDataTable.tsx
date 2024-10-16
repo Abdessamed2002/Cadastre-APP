@@ -1,7 +1,8 @@
-"use client"
+// AdminDataTable.tsx
 
 import React, { useState } from 'react';
 import Image from 'next/image';
+import ImageModal from './ImageModal'; // Import the ImageModal
 
 interface TableData {
   id: string;
@@ -10,12 +11,12 @@ interface TableData {
   adresse: string;
   telephone: string;
   description: string;
-  image?: string;
+  image?: string; // Image is optional
 }
 
 interface AdminDataTableProps {
   data: TableData[];
-  showImage?: boolean;
+  showImage?: boolean; // Option to toggle the image column
 }
 
 const TruncatedText: React.FC<{ text: string; maxLength: number }> = ({ text, maxLength }) => {
@@ -36,7 +37,20 @@ const TruncatedText: React.FC<{ text: string; maxLength: number }> = ({ text, ma
   );
 };
 
-const AdminDataTable: React.FC<AdminDataTableProps> = ({ data, showImage = false }) => {
+const AdminDataTable: React.FC<AdminDataTableProps> = ({ data, showImage = true }) => {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const handleImageClick = (image: string) => {
+    setSelectedImage(image);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedImage(null);
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
@@ -65,9 +79,18 @@ const AdminDataTable: React.FC<AdminDataTableProps> = ({ data, showImage = false
                 <TruncatedText text={item.description} maxLength={100} />
               </td>
               {showImage && (
-                <td className="py-3 px-4">
-                  {item.image && (
-                    <Image src={item.image} alt="Fraud evidence" width={50} height={50} className="rounded-md" />
+                <td className="py-3 px-4 cursor-pointer">
+                  {item.image ? (
+                    <Image
+                      src={item.image}
+                      alt="Uploaded evidence"
+                      width={80}
+                      height={80}
+                      className="rounded-md"
+                      onClick={() => item.image && handleImageClick(item.image)} // Call only if image is defined
+                    />
+                  ) : (
+                    <span>Aucune image</span> // Fallback text if no image is provided
                   )}
                 </td>
               )}
@@ -75,6 +98,9 @@ const AdminDataTable: React.FC<AdminDataTableProps> = ({ data, showImage = false
           ))}
         </tbody>
       </table>
+      
+      {/* Modal to display the image */}
+      <ImageModal isOpen={isModalOpen} imageSrc={selectedImage!} onClose={handleCloseModal} />
     </div>
   );
 };

@@ -1,24 +1,54 @@
-import React from 'react';
+"use client"
+import React, { useEffect, useState } from 'react';
 import AdminDataTable from '../../Components/AdminDataTable';
 
-// Mock data - replace this with actual data fetching logic
-const mockData = [
-  {
-    id: '1',
-    nom: 'Doe',
-    prenom: 'John',
-    adresse: '123 Main St, Algiers',
-    telephone: '0512345678',
-    description: 'Request for second delimitation of property.',
-  },
-  // Add more mock data as needed
-];
+interface CadastreUpdateData {
+  id: string;
+  nom: string;
+  prenom: string;
+  adresse: string;
+  telephone: string;
+  description: string;
+}
 
 const CadastreUpdatePage: React.FC = () => {
+  const [cadastreUpdateData, setCadastreUpdateData] = useState<CadastreUpdateData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCadastreUpdateRequests = async () => {
+      try {
+        const response = await fetch('/api/users?page=mise-a-jour'); // API endpoint for cadastre update data
+        if (!response.ok) {
+          throw new Error('Failed to fetch cadastre update data.');
+        }
+        const data = await response.json();
+        setCadastreUpdateData(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCadastreUpdateRequests();
+  }, []);
+
+  if (loading) {
+    return <p>Loading cadastre update requests...</p>;
+  }
+
+  if (error) {
+    return <p>Error fetching cadastre update requests: {error}</p>;
+  }
+
   return (
     <>
-      <h2 className="text-3xl font-bold mb-6">Demande de mise à jour des informations cadastrales</h2>
-      <AdminDataTable data={mockData} />
+      <h2 className="text-3xl font-bold mb-6">
+        Demande de mise à jour des informations cadastrales
+      </h2>
+      <AdminDataTable data={cadastreUpdateData} />
     </>
   );
 };

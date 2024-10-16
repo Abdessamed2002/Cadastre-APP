@@ -1,24 +1,52 @@
-import React from 'react';
+"use client"
+import React, { useEffect, useState } from 'react';
 import AdminDataTable from '../../Components/AdminDataTable';
 
-// Mock data - replace this with actual data fetching logic
-const mockData = [
-  {
-    id: '1',
-    nom: 'Doe',
-    prenom: 'John',
-    adresse: '123 Main St, Algiers',
-    telephone: '0512345678',
-    description: 'Request for second delimitation of property.',
-  },
-  // Add more mock data as needed
-];
+interface ConflictData {
+  id: string;
+  nom: string;
+  prenom: string;
+  adresse: string;
+  telephone: string;
+  description: string;
+}
 
 const ConflictPage: React.FC = () => {
+  const [conflictData, setConflictData] = useState<ConflictData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchConflictReports = async () => {
+      try {
+        const response = await fetch('/api/users?page=conflit'); // API endpoint for conflict reports
+        if (!response.ok) {
+          throw new Error('Failed to fetch conflict reports.');
+        }
+        const data = await response.json();
+        setConflictData(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchConflictReports();
+  }, []);
+
+  if (loading) {
+    return <p>Loading conflict reports...</p>;
+  }
+
+  if (error) {
+    return <p>Error fetching conflict reports: {error}</p>;
+  }
+
   return (
     <>
       <h2 className="text-3xl font-bold mb-6">Conflit Déclarers</h2>
-      <AdminDataTable data={mockData} />
+      <AdminDataTable data={conflictData} />
     </>
   );
 };
