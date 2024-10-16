@@ -1,34 +1,53 @@
-import React from 'react';
+"use client"
+import React, { useEffect, useState } from 'react';
 import AdminDataTable from '../../Components/AdminDataTable';
 
-// Mock data for fraud reports - replace with actual data fetching logic
-const mockFraudData = [
-  {
-    id: '1',
-    nom: 'Smith',
-    prenom: 'Jane',
-    adresse: '456 Elm St, Oran',
-    telephone: '0612345678',
-    description: 'Suspected fraudulent property sale.',
-    image: '/path/to/image.jpg', // Replace with actual image path
-  },
-  {
-    id: '1',
-    nom: 'Smith',
-    prenom: 'Jane',
-    adresse: '456 Elm St, Oran bbbbzz tt t tqksdfqhgkerg oazeif fvsdv',
-    telephone: '0612345678',
-    description: 'Suspected fraudulent property sale laaa zeahfurgn qsdvsdfgi^zerg eztopoeazfebzgr sdvvjmzetg^zt btjovsd 854656. Suspected fraudulent property sale laaa zeahfurgn qsdvsdfgi^zerg eztopoeazfebzgr sdvvjmzetg^zt btjovsd 854656.',
-    image: '/path/to/image.jpg', // Replace with actual image path
-  },
-  // Add more mock data as needed
-];
+interface FraudData {
+  id: string;
+  nom: string;
+  prenom: string;
+  adresse: string;
+  telephone: string;
+  description: string;
+  image?: string;
+}
 
 const FraudReportPage: React.FC = () => {
+  const [fraudData, setFraudData] = useState<FraudData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchFraudReports = async () => {
+      try {
+        const response = await fetch('/api/users?page=fraude'); // API endpoint for fraud reports
+        if (!response.ok) {
+          throw new Error('Failed to fetch fraud reports.');
+        }
+        const data = await response.json();
+        setFraudData(data);
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFraudReports();
+  }, []);
+
+  if (loading) {
+    return <p>Loading fraud reports...</p>;
+  }
+
+  if (error) {
+    return <p>Error fetching fraud reports: {error}</p>;
+  }
+
   return (
     <>
       <h2 className="text-3xl font-bold mb-6">Fraudes immobilière Signalers</h2>
-      <AdminDataTable data={mockFraudData} showImage={true} />
+      <AdminDataTable data={fraudData} showImage={true} />
     </>
   );
 };
