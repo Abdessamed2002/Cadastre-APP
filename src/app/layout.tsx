@@ -1,4 +1,3 @@
-// app/layout.tsx
 import './styles/globals.css'; // Import the global CSS file with Tailwind
 import { ReactNode } from 'react';
 
@@ -10,8 +9,10 @@ export const metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
-      <body className="bg-customGray"> {/* You can set a Tailwind class for the background here */}
-        {children}
+      <body className="bg-customGray min-h-screen"> {/* Ensure the page takes full height */}
+        <div className="mx-auto"> {/* Container for content */}
+          {children}
+        </div>
       </body>
     </html>
   );

@@ -5,8 +5,10 @@ const Home: React.FC = () => {
     return (
         <div>
             <Header />
-            <main className="p-4">
-                <h3 className="text-2xl font-semibold mb-2 text-center mt-10">Simplifiez vos demandes relatives aux biens fonciers</h3>
+            <main className="p-4 md:p-8 lg:p-12"> {/* Adjust padding for different screen sizes */}
+                <h3 className="text-xl md:text-3xl lg:text-4xl font-semibold mb-4 text-center mt-8"> {/* Text size adjustment */}
+                    Simplifiez vos demandes relatives aux biens fonciers
+                </h3>
                 <ActionButtons />
             </main>
         </div>
@@ -14,5 +16,3 @@ const Home: React.FC = () => {
 };
 
 export default Home;
-
-// 8 heures , 13:30 15/10/2024
