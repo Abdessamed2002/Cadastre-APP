@@ -1,5 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import AdminDataTable from '../../Components/AdminDataTable';
 
 interface FraudData {
@@ -16,7 +17,17 @@ const FraudReportPage: React.FC = () => {
   const [fraudData, setFraudData] = useState<FraudData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
+  // Check if the user is logged in
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isAdminLoggedIn');
+    if (!isLoggedIn) {
+      // If not logged in, redirect to the login page
+      router.push('/Admin/AdminLogin');
+    }
+  }, [router]);
+  
   useEffect(() => {
     const fetchFraudReports = async () => {
       try {
