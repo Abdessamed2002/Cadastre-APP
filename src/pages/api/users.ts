@@ -30,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         let imageUrl = null;
   
         // Vérifie si le formTitle est "fraude" avant de traiter l'image
-        if (fields.formTitle?.[0] === 'fraude') {
+        if (fields.formTitle?.[0] === 'Signaler une fraude immobilière') {
           if (files?.image?.[0]?.filepath) {
             try {
               console.time('Cloudinary upload');

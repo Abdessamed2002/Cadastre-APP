@@ -1,5 +1,6 @@
 "use client"
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import AdminDataTable from '../../Components/AdminDataTable';
 
 interface TableData {
@@ -16,6 +17,16 @@ const DelimitationPage: React.FC = () => {
   const [data, setData] = useState<TableData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  // Check if the user is logged in
+  useEffect(() => {
+    const isLoggedIn = localStorage.getItem('isAdminLoggedIn');
+    if (!isLoggedIn) {
+      // If not logged in, redirect to the login page
+      router.push('/Admin/AdminLogin');
+    }
+  }, [router]);
 
   // Fetch data from the API
   useEffect(() => {
@@ -33,8 +44,6 @@ const DelimitationPage: React.FC = () => {
           return idA.localeCompare(idB);
         });
         
-        console.log(result)
-        console.log(sortedData)
         setData(sortedData);
       } catch (error: any) {
         setError(error.message);
